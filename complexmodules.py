@@ -242,7 +242,6 @@ class Dccrn(Layer):
         encoder_out=[]
         for layer in self.encoders:
             out=layer(out)
-            print(out.shape)
             
             encoder_out.append(out)
         channel_size=out.shape[-1]
@@ -268,7 +267,6 @@ class Dccrn(Layer):
     
         for idx,decoder in enumerate(self.decoders):
             out=complex_cat(out,encoder_out[-1-idx])
-            print(out.shape)
             out=decoder(out)
             
             out=out[:,:,1:,:]
@@ -291,29 +289,4 @@ if __name__=='__main__':
   
     real_mask,imag_mask=testdccrn(mic_real,mic_imag)
     testmodel=Model(inputs=[mic_real,mic_imag],outputs=[real_mask,imag_mask])
-    print(testdccrn)
-    
-
-
-
-
-
-        
-    
-
-        
-
-        
-
-
-
-
-        
-
-
-
-
-        
-
-
-
+   
