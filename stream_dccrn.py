@@ -7,28 +7,6 @@ import tensorflow as tf
 from tensorflow.keras.layers import Concatenate,ZeroPadding2D,LSTM,Reshape,Dense,Conv2D
 from complexmodules import complexconv2d,complexconvtranspose2d,complex_prelu,complex_cat
 
-class complexconv2d(Layer):
-    def __init__(self,channels,kernel_size,stride=2,padding_size=2,**kwargs):
-        super(complexconv2d,self).__init__( **kwargs)
-        self.real_conv=Conv2D(filters=channels,kernel_size=(2,kernel_size),padding ='valid',strides=(1,stride))
-        self.img_conv=Conv2D(filters=channels,kernel_size=(2,kernel_size),padding ='valid',strides=(1,stride))
-        self.padding=ZeroPadding2D(padding=((0,0),(padding_size,padding_size)))
-    
-    def call(self,inputs):
-        fre_num=inputs.shape[-1]
-        in_real=inputs[:,:,:,:fre_num//2]
-        in_imag=inputs[:,:,:,fre_num//2:]
-        in_real=self.padding(in_real)
-        in_imag=self.padding(in_imag)
-        r2r=self.real_conv(in_real)
-        r2i=self.img_conv(in_imag)
-        i2r=self.real_conv(in_real)
-        i2i=self.img_conv(in_imag)
-        out_real=r2r-i2i
-        out_imag=r2i+i2r
-        out=Concatenate(axis=-1)([out_real,out_imag])
-        return out
-
 class complexbatchnorm(Layer):
     def __init__(self, num_features,eps=1e-5,momenum=0.9,**kwargs):
         super(complexbatchnorm,self).__init__( **kwargs)
